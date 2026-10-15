@@ -1,9 +1,11 @@
 package unidad1.ejercicios.ejercicio_0;
 
 import java.io.IOException;
+import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -219,25 +221,81 @@ public class Main {
     }
     
 	
-	private static Object renombrarFichero() {
-		
-		
-		return null;
-	}
+    
+ // 4. CREAR UNA CARPETA
+    private static void crearCarpeta() {
+        System.out.print("Nombre de la nueva carpeta: ");
+        String nombre = entrada.nextLine();
+        Path nuevaCarpeta = Paths.get(nombre);
 
-	private static Object crearFichero() {
-		
-		
-		return null;
-	}
+        try {
+            if (Files.exists(nuevaCarpeta)) {
+                System.out.println("Error: Ya existe un archivo o carpeta con ese nombre.");
+            } else {
+                // createDirectory lanza excepción si el directorio padre no existe
+                // createDirectories crea también los padres si faltan (más robusto)
+                Files.createDirectory(nuevaCarpeta);
+                System.out.println("Carpeta creada correctamente en: " + nuevaCarpeta.toAbsolutePath());
+            }
+        } catch (FileAlreadyExistsException e) {
+            System.out.println("Error: El archivo ya existe.");
+        } catch (IOException e) {
+            System.out.println("Error al crear carpeta: " + e.getMessage());
+        }
+    }
 
-	private static Object crearCarpeta() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    
+    
+ // 5. CREAR UN FICHERO
+    private static void crearFichero() {
+        System.out.print("Nombre del nuevo fichero: ");
+        String nombre = entrada.nextLine();
+        Path nuevoFichero = Paths.get(nombre);
+
+        try {
+            if (Files.exists(nuevoFichero)) {
+                System.out.println("Error: El fichero ya existe.");
+            } else {
+                Files.createFile(nuevoFichero);
+                System.out.println("Fichero creado correctamente.");
+            }
+        } catch (FileAlreadyExistsException e) {
+            System.out.println("Error: El fichero ya existe.");
+        } catch (IOException e) {
+            System.out.println("Error al crear fichero: " + e.getMessage());
+        }
+    }
 
 
 
+ // 6. RENOMBRAR UN FICHERO
+    private static void renombrarFichero() {
+        System.out.print("Ruta del fichero original: ");
+        Path origen = Paths.get(entrada.nextLine());
+
+        System.out.print("Nuevo nombre (o ruta completa): ");
+        Path destino = Paths.get(entrada.nextLine());
+
+        try {
+            // Comprobaciones previas
+            if (Files.notExists(origen)) {
+                System.out.println("Error: El fichero original no existe.");
+                return;
+            }
+            if (Files.exists(destino)) {
+                System.out.println("Error: Ya existe un archivo con el nuevo nombre.");
+                return;
+            }
+
+            // Renombrar (Move)
+            // StandardCopyOption.ATOMIC_MOVE asegura que la operación es atómica (todo o nada)
+            Files.move(origen, destino, StandardCopyOption.ATOMIC_MOVE);
+            System.out.println("Fichero renombrado correctamente.");
+
+        } catch (IOException e) {
+            System.out.println("Error al renombrar: " + e.getMessage());
+        }
+    }
 
 	
 
