@@ -1,0 +1,5 @@
+1: Este fichero de texto
+2: es una prueba 
+3: para el ejecicio 
+4: LectorTexto
+5: Ejemplos_4
